@@ -1,0 +1,53 @@
+name: Deploy to Hostinger
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "23"
+
+      - name: Install dependencies
+        working-directory: ./server
+        run: npm install
+
+      - name: Build backend
+        working-directory: ./server
+        run: npm run build
+
+      - name: Deploy Backend to Hostinger via FTP
+        uses: SamKirkland/FTP-Deploy-Action@4.3.0
+        with:
+          server: ${{ secrets.HOSTINGER_FTP_SERVER }}
+          username: ${{ secrets.HOSTINGER_FTP_USERNAME }}
+          password: ${{ secrets.HOSTINGER_FTP_PASSWORD }}
+          local-dir: ./server/dist/
+          server-dir: /api/
+          dangerous-clean-slate: true
+
+      - name: Deploy Backend Config Files
+        uses: SamKirkland/FTP-Deploy-Action@4.3.0
+        with:
+          server: ${{ secrets.HOSTINGER_FTP_SERVER }}
+          username: ${{ secrets.HOSTINGER_FTP_USERNAME }}
+          password: ${{ secrets.HOSTINGER_FTP_PASSWORD }}
+          local-dir: ./server/
+          server-dir: /api/
+          include: |
+            package.json
+            package-lock.json
+            ecosystem.config.js
+          exclude: |
+            node_modules/**
+            src/**
+            .env
+            dist/**
+            tsconfig.json

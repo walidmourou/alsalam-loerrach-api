@@ -1,0 +1,9 @@
+FastAPI
+SQLAlchemy
+mysql-connector-python
+pydantic
+python-jose
+uvicorn
+alembic
+python-dotenv
+PyJWT
