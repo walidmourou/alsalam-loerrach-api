@@ -8,7 +8,7 @@ router = APIRouter()
 
 @router.post("/students/", response_model=StudentResponse)
 def register_student(student: StudentCreate, db: Session = Depends(get_db)):
-    db_student = Student(**student.dict())
+    db_student = Student(**student.model_dump())
     db.add(db_student)
     db.commit()
     db.refresh(db_student)

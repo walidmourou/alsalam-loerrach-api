@@ -14,7 +14,7 @@ def register_parent(parent: ParentCreate, db: Session = Depends(get_db)):
     if db_parent:
         raise HTTPException(status_code=400, detail="Email already registered")
     
-    new_parent = Parent(**parent.dict())
+    new_parent = Parent(**parent.model_dump())
     db.add(new_parent)
     db.commit()
     db.refresh(new_parent)

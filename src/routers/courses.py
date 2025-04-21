@@ -9,7 +9,7 @@ router = APIRouter()
 
 @router.post("/courses/", response_model=CourseResponse, dependencies=[Depends(JwtBearer())])
 def create_course(course: CourseCreate, db: Session = Depends(get_db)):
-    db_course = models.Course(**course.dict())
+    db_course = models.Course(**course.model_dump())
     db.add(db_course)
     db.commit()
     db.refresh(db_course)
